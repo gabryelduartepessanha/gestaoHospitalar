@@ -57,6 +57,27 @@ public class Banco {
         }
     }
 
+    public void atualizar(Medico medico, Connection conexao){
+        String sql = "update medico set nome = ?, crm = ? where id = ?";
+
+        try{
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setString(1, medico.getNome());
+            stmt.setString(2, medico.getCrm());
+            stmt.setInt(3, medico.getId());
+
+            int linhasAfetadas = stmt.executeUpdate();
+            if(linhasAfetadas > 0){
+                System.out.println("O médico foi atualizado com sucesso!");
+            }else{
+                System.out.println("O médico não foi encontrado com o ID informado.");
+            }
+        }catch(SQLException e){
+            System.out.println("Aconteceu um erro ao tentar atualizar o médico no banco de dados.");
+            e.printStackTrace();
+        }
+    }
+
     public void adicionar(Paciente paciente, Connection conexao){
 
     }

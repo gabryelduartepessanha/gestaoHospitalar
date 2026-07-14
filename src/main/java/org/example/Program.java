@@ -16,8 +16,11 @@ public class Program {
         Banco b = new Banco();
         Connection conexao = b.conectar();
 
-        Medico medico = new Medico("Gabryel Duarte", "155");
-        b.adicionar(medico, conexao);
-//        b.desconectar(conexao);
+        Medico medico = new Medico("Gabryel Duarte", "1014");
+        medico.setId(5);
+
+        b.atualizar(medico, conexao);
+//        b.adicionar(medico, conexao);
+        b.desconectar(conexao);
     }
 }
