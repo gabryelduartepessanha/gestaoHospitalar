@@ -6,6 +6,7 @@ import java.net.ConnectException;
 import java.security.PublicKey;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class Banco {
@@ -38,7 +39,22 @@ public class Banco {
     }
 
     public void adicionar(Medico medico, Connection conexao){
+        String sql = "insert into medico(nome, crm) values(?,?)";
 
+        try{
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setString(1, medico.getNome());
+            stmt.setString(2, medico.getCrm());
+
+            int linhasAfetadas = stmt.executeUpdate();
+            if(linhasAfetadas > 0){
+                System.out.println("O médico foi cadastrado com sucesso!");
+            }
+
+            stmt.close();
+        }catch(SQLException e){
+            System.out.println("Aconteceu um erro ao tentar cadastrar um médico no banco de dados.");
+        }
     }
 
     public void adicionar(Paciente paciente, Connection conexao){

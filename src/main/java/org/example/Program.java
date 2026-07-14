@@ -15,6 +15,9 @@ public class Program {
     public static void main(String[] args) throws SQLException {
         Banco b = new Banco();
         Connection conexao = b.conectar();
-        b.desconectar(conexao);
+
+        Medico medico = new Medico("Gabryel Duarte", "155");
+        b.adicionar(medico, conexao);
+//        b.desconectar(conexao);
     }
 }
