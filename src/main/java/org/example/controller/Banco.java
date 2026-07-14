@@ -4,10 +4,9 @@ import org.example.model.*;
 
 import java.net.ConnectException;
 import java.security.PublicKey;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Banco {
     private String usuario;
@@ -76,6 +75,33 @@ public class Banco {
             System.out.println("Aconteceu um erro ao tentar atualizar o médico no banco de dados.");
             e.printStackTrace();
         }
+    }
+
+    public List<Medico> pesquisarTodosOsMedicos(Connection conexao){
+        List<Medico> medicos = new ArrayList<>();
+        String sql = "select id, nome, crm from medico";
+
+        try{
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                Medico medico = new Medico();
+
+                medico.setId(rs.getInt("id"));
+                medico.setNome(rs.getString("nome"));
+                medico.setCrm(rs.getString("crm"));
+
+                medicos.add(medico);
+            }
+
+            rs.close();
+            stmt.close();
+        }catch (SQLException e){
+            System.out.println("Erro ao buscar os cadastros dos médicos.");
+            e.printStackTrace();
+        }
+        return medicos;
     }
 
     public void adicionar(Paciente paciente, Connection conexao){
