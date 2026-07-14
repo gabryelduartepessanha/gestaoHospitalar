@@ -104,6 +104,28 @@ public class Banco {
         return medicos;
     }
 
+    public void deletarMedico(int id, Connection conexao){
+        String sql = "delete from medico where id = ?";
+
+        try{
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setInt(1, id);
+
+            int linhasAfetadas = stmt.executeUpdate();
+
+            if(linhasAfetadas > 0){
+                System.out.println("O médico foi deletado com sucesso!");
+            }else{
+                System.out.println("Nenhum médico foi encontrado com o ID informado.");
+            }
+
+            stmt.close();
+        }catch (SQLException e){
+            System.out.println("Não foi possível deletar médico pelo ID.");
+            e.printStackTrace();
+        }
+    }
+
     public void adicionar(Paciente paciente, Connection conexao){
 
     }
