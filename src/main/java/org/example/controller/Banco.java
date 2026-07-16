@@ -7,6 +7,7 @@ import java.security.PublicKey;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class Banco {
     private String usuario;
@@ -37,7 +38,7 @@ public class Banco {
         conexao.close();
     }
 
-    public void adicionar(Medico medico, Connection conexao){
+    public void adicionarMedico(Medico medico, Connection conexao){
         String sql = "insert into medico(nome, crm) values(?,?)";
 
         try{
@@ -56,7 +57,7 @@ public class Banco {
         }
     }
 
-    public void atualizar(Medico medico, Connection conexao){
+    public void atualizarMedico(Medico medico, Connection conexao){
         String sql = "update medico set nome = ?, crm = ? where id = ?";
 
         try{
@@ -153,8 +154,56 @@ public class Banco {
         return medico;
     }
 
-    public void adicionar(Paciente paciente, Connection conexao){
+    public void adicionarPaciente(Paciente paciente, Endereco endereco, ArrayList<Telefone> telefones, Connection conexao){
+        String sql = "insert into paciente(nome, cpf) values(?, ?)";
 
+        try{
+            //cadastrando paciente
+            PreparedStatement stmtPaciente = conexao.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            stmtPaciente.setString(1, paciente.getNome());
+            stmtPaciente.setString(2, paciente.getCpf());
+
+            stmtPaciente.executeUpdate();
+
+            ResultSet rsPaciente = stmtPaciente.getGeneratedKeys();
+            int pacienteId = 0;
+
+            if(rsPaciente.next()){
+                pacienteId = rsPaciente.getInt(1);
+            }
+            rsPaciente.close();
+            stmtPaciente.close();
+
+            //cadastrando o endereço usando PK do paciente
+            String sqlEndereco = "insert into endereco(paciente_id, numero, bairro, rua) values(?, ?, ?, ?)";
+
+            PreparedStatement stmtEndereco = conexao.prepareStatement(sqlEndereco);
+            stmtEndereco.setInt(1, pacienteId);
+            stmtEndereco.setInt(2, endereco.getNumero());
+            stmtEndereco.setString(3, endereco.getBairro());
+            stmtEndereco.setString(4, endereco.getRua());
+
+            stmtEndereco.executeUpdate();
+            stmtEndereco.close();
+
+            //cadastando os telefones de contato usando FK do paciente
+            String sqlTelefone = "insert into telefone(paciente_id, numero) values(?, ?)";
+
+            for(int i = 0; i < telefones.size();i++){
+                Telefone telefone = telefones.get(i);
+
+                PreparedStatement stmtTelefone = conexao.prepareStatement(sqlTelefone);
+                stmtTelefone.setInt(1, pacienteId);
+                stmtTelefone.setString(2, telefone.getNumero());
+
+                stmtTelefone.executeUpdate();
+                stmtTelefone.close();
+            }
+
+            System.out.println("Paciente registrado com sucesso!");
+        }catch (SQLException e){
+            System.out.println("Não foi possível inserir o paciente no Banco de dados.");
+        }
     }
 
     public void adicionar(Endereco endereco, Connection conexao){

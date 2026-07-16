@@ -3,21 +3,21 @@ package org.example.model;
 public class Endereco {
     private String rua;
     private String bairro;
-    private int numeor;
+    private int numero;
     private Integer id;
 
     public Endereco() {
         this.id = 0;
         this.rua = "";
         this.bairro = "";
-        this.numeor = 0;
+        this.numero = 0;
     }
 
     public Endereco(String rua, String bairro, int numero) {
         this.id = 0;
         this.rua = rua;
         this.bairro = bairro;
-        this.numeor = numero;
+        this.numero = numero;
     }
 
     public String getRua() {
@@ -36,12 +36,12 @@ public class Endereco {
         this.bairro = bairro;
     }
 
-    public int getNumeor() {
-        return numeor;
+    public int getNumero() {
+        return numero;
     }
 
-    public void setNumeor(int numeor) {
-        this.numeor = numeor;
+    public void setNumero(int numero) {
+        this.numero = numero;
     }
 
     public Integer getId() {
@@ -57,7 +57,7 @@ public class Endereco {
         return "Endereco{" +
                 "rua='" + rua + '\'' +
                 ", bairro='" + bairro + '\'' +
-                ", numeor=" + numeor +
+                ", numeor=" + numero +
                 ", id=" + id +
                 '}';
     }
