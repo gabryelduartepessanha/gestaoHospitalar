@@ -17,14 +17,8 @@ public class Program {
         Banco b = new Banco();
         Connection conexao = b.conectar();
 
-        List<Medico> medicos = b.pesquisarTodosOsMedicos(conexao);
+
 
         b.desconectar(conexao);
-
-        for(int i = 0; i<medicos.size();i++){
-            Medico m = medicos.get(i);
-
-            System.out.println(m.getNome()+" "+m.getCrm()+" "+m.getId());
-        }
     }
 }
