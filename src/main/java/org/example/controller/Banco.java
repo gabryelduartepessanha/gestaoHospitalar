@@ -168,4 +168,13 @@ public class Banco {
     public void adicionar(Atendimento atendimento, Connection conexao){
 
     }
+
+    @Override
+    public String toString() {
+        return "Banco{" +
+                "usuario='" + usuario + '\'' +
+                ", senha='" + senha + '\'' +
+                ", url='" + url + '\'' +
+                '}';
+    }
 }
