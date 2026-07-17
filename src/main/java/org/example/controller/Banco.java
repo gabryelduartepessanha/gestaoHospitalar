@@ -231,6 +231,7 @@ public class Banco {
                 endereco.setNumero(rs.getInt("numero"));
 
                 telefone = new Telefone(rs.getString("telefone"));
+                telefone.setId(paciente.getId());
                 telefones.add(telefone);
             }
 
