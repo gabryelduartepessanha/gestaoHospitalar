@@ -10,6 +10,14 @@ public class Paciente {
     private Endereco endereco;
     private ArrayList<Atendimento> atendimentos;
 
+    public Paciente(){
+        this.id = 0;
+        this.nome = nome;
+        this.cpf = cpf;
+        this.telefones = new ArrayList<>();
+        this.endereco = new Endereco();
+    }
+
     public Paciente(String nome, String cpf) {
         this.id = 0;
         this.nome = nome;
@@ -102,12 +110,12 @@ public class Paciente {
     @Override
     public String toString() {
         return "Paciente{" +
-                "nome='" + nome + '\'' +
-                ", cpf='" + cpf + '\'' +
-                ", id=" + id +
-                ", telefones=" + telefones +
-                ", endereco=" + endereco +
-                ", atendimentos=" + atendimentos +
+                "nome: '" + nome + '\'' +
+                ", cpf: '" + cpf + '\'' +
+                ", id: " + id +
+                ", telefones: " + telefones +
+                ", endereco: " + endereco +
+                ", atendimentos: " + atendimentos +
                 '}';
     }
 }

@@ -206,6 +206,47 @@ public class Banco {
         }
     }
 
+    public Paciente pesquisarPaciente(String cpf, Connection conexao){
+        String sql = "select p.id, p.nome, e.rua, e.bairro, e.numero, t.numero as telefone from paciente p join endereco e on p.id = e.paciente_id join telefone t on p.id = t.paciente_id where cpf = ?";
+
+        Paciente paciente = new Paciente();
+
+        try{
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setString(1, cpf);
+
+            ResultSet rs = stmt.executeQuery();
+
+            Endereco endereco = new Endereco();
+            Telefone telefone;
+            ArrayList<Telefone> telefones = new ArrayList<>();
+
+            while(rs.next()){
+                paciente.setId(rs.getInt("id"));
+                paciente.setNome(rs.getString("nome"));
+                paciente.setCpf(rs.getString("cpf"));
+
+                endereco.setRua(rs.getString("rua"));
+                endereco.setBairro(rs.getString("bairro"));
+                endereco.setNumero(rs.getInt("numero"));
+
+                telefone = new Telefone(rs.getString("telefone"));
+                telefones.add(telefone);
+            }
+
+            rs.close();
+            stmt.close();
+
+            endereco.setId(paciente.getId());
+            paciente.setEndereco(endereco);
+            paciente.setTelefones(telefones);
+
+        }catch (SQLException e){
+            System.out.println("Não foi possível achar o paciente pelo CPF.");
+        }
+        return paciente;
+    }
+
     public void adicionar(Endereco endereco, Connection conexao){
 
     }
@@ -218,12 +259,4 @@ public class Banco {
 
     }
 
-    @Override
-    public String toString() {
-        return "Banco{" +
-                "usuario='" + usuario + '\'' +
-                ", senha='" + senha + '\'' +
-                ", url='" + url + '\'' +
-                '}';
-    }
 }
