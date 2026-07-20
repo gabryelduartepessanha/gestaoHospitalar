@@ -207,7 +207,7 @@ public class Banco {
     }
 
     public Paciente pesquisarPaciente(String cpf, Connection conexao){
-        String sql = "select p.id, p.nome, e.rua, e.bairro, e.numero, t.numero as telefone from paciente p join endereco e on p.id = e.paciente_id join telefone t on p.id = t.paciente_id where cpf = ?";
+        String sql = "select p.id, p.nome, e.rua, e.bairro, e.numero, t.numero as telefone, t.id as codigo from paciente p join endereco e on p.id = e.paciente_id join telefone t on p.id = t.paciente_id where cpf = ?";
 
         Paciente paciente = new Paciente();
 
@@ -231,7 +231,7 @@ public class Banco {
                 endereco.setNumero(rs.getInt("numero"));
 
                 telefone = new Telefone(rs.getString("telefone"));
-                telefone.setId(paciente.getId());
+                telefone.setId(rs.getInt("codigo"));
                 telefones.add(telefone);
             }
 
@@ -246,6 +246,53 @@ public class Banco {
             System.out.println("Não foi possível achar o paciente pelo CPF.");
         }
         return paciente;
+    }
+
+    public void atualizarPaciente(Paciente paciente_novo, Connection conexao){
+        String sqlPaciente = "update paciente set nome = ?, cpf = ? where cpf = ?";
+        String sqlEndereco = "upadate endereco set rua = ?, bairro = ?, numero = ? where paciente_id = ?";
+        String sqlTelefone = "upadate telefone set numero = ? where paciente_id = ? and id = ?";
+
+        try {
+            //atualização dos dados do paciente
+            PreparedStatement stmtPaciente = conexao.prepareStatement(sqlPaciente);
+            stmtPaciente.setString(1, paciente_novo.getNome());
+            stmtPaciente.setString(2, paciente_novo.getCpf());
+            stmtPaciente.setString(3, paciente_novo.getCpf());
+
+            stmtPaciente.executeUpdate();
+
+            //atualizacao dos dados do endereco
+            PreparedStatement stmtEndereco = conexao.prepareStatement(sqlEndereco);
+            stmtEndereco.setString(1, paciente_novo.getEndereco().getRua());
+            stmtEndereco.setString(2, paciente_novo.getEndereco().getBairro());
+            stmtEndereco.setInt(3, paciente_novo.getEndereco().getNumero());
+            stmtEndereco.setInt(4, paciente_novo.getId());
+
+            stmtEndereco.executeUpdate();
+
+            //atualizacao dos dados do telefone
+
+            ArrayList<Telefone> telefones = paciente_novo.getTelefones();
+
+            for(int i = 0; i<telefones.size();i++){
+                Telefone t = telefones.get(i);
+                PreparedStatement stmtTelefone = conexao.prepareStatement(sqlTelefone);
+                stmtTelefone.setString(1, t.getNumero());
+                stmtTelefone.setInt(2, paciente_novo.getId());
+                stmtTelefone.setInt(3, t.getId());
+                stmtTelefone.executeUpdate();
+                stmtTelefone.close();
+            }
+
+            stmtEndereco.close();
+            stmtPaciente.close();
+
+            System.out.println("Os dados do paciente foram atualizados com sucesso!");
+
+        }catch (SQLException e){
+            System.out.println("Não foi possível atualizar os dados do paciente!");
+        }
     }
 
     public void adicionar(Endereco endereco, Connection conexao){
