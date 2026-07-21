@@ -295,7 +295,44 @@ public class Banco {
         }
     }
 
-    public void adicionar(Endereco endereco, Connection conexao){
+    public void deletarPaciente(String cpf, Connection conexao){
+        Paciente paciente = pesquisarPaciente(cpf, conexao);
+        int chaveEstrangeiraPaciente = paciente.getId();
+
+        String sqlTelefone = "delete from telefone where paciente_id = ?";
+        String sqlEndereco = "delete from enderedo where paciente_id = ?";
+        String sqlPaciente = "delete from paciente where cpf = ?";
+
+
+
+        try{
+            //delecao dos telefones
+            PreparedStatement stmtTelefone = conexao.prepareStatement(sqlTelefone);
+            stmtTelefone.setInt(1, chaveEstrangeiraPaciente);
+            stmtTelefone.executeUpdate();
+            stmtTelefone.close();
+            stmtTelefone.close();
+            System.out.println("Todos os contatos do paciente "+ paciente.getNome() + " foram deletados.");
+
+            //delecao dos enderecos
+            PreparedStatement stmtEndereco = conexao.prepareStatement(sqlEndereco);
+            stmtEndereco.setInt(1, chaveEstrangeiraPaciente);
+            stmtEndereco.executeUpdate();
+            stmtEndereco.close();
+            System.out.println("Tdoos os endereços do paciente "+ paciente.getNome() + " foram deletados.");
+
+            //delecao paciente
+            PreparedStatement stmtPaciente = conexao.prepareStatement(sqlPaciente);
+            stmtPaciente.setString(1, paciente.getCpf());
+            stmtPaciente.executeUpdate();
+            stmtPaciente.close();
+            System.out.println("O paciente foi deletado do sistema.");
+
+        }catch (SQLException e){
+            System.out.println("Não foi possível deletar os telefones do paciente!");
+        }
+
+
 
     }
 
