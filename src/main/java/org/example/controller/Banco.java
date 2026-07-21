@@ -47,11 +47,13 @@ public class Banco {
             stmt.setString(2, medico.getCrm());
 
             int linhasAfetadas = stmt.executeUpdate();
+
             if(linhasAfetadas > 0){
                 System.out.println("O médico foi cadastrado com sucesso!");
             }
 
             stmt.close();
+
         }catch(SQLException e){
             System.out.println("Aconteceu um erro ao tentar cadastrar um médico no banco de dados.");
         }
@@ -67,6 +69,7 @@ public class Banco {
             stmt.setInt(3, medico.getId());
 
             int linhasAfetadas = stmt.executeUpdate();
+
             if(linhasAfetadas > 0){
                 System.out.println("O médico foi atualizado com sucesso!");
             }else{
@@ -98,6 +101,7 @@ public class Banco {
 
             rs.close();
             stmt.close();
+
         }catch (SQLException e){
             System.out.println("Erro ao buscar os cadastros dos médicos.");
             e.printStackTrace();
@@ -148,6 +152,7 @@ public class Banco {
 
             rs.close();
             stmt.close();
+
         }catch (SQLException e){
             System.out.println("O médico não foi identificado pelo CRM.");
         }
@@ -303,8 +308,6 @@ public class Banco {
         String sqlEndereco = "delete from enderedo where paciente_id = ?";
         String sqlPaciente = "delete from paciente where cpf = ?";
 
-
-
         try{
             //delecao dos telefones
             PreparedStatement stmtTelefone = conexao.prepareStatement(sqlTelefone);
@@ -331,13 +334,31 @@ public class Banco {
         }catch (SQLException e){
             System.out.println("Não foi possível deletar os telefones do paciente!");
         }
-
-
-
     }
 
-    public void adicionar(Telefone telefone, Connection conexao){
+    public void adicionarAtendimento(String crm, String cpf, String dataDeAtendimento, Connection conexao){
+        Medico medico = pesquisarMedico(crm, conexao);
+        Paciente paciente = pesquisarPaciente(cpf, conexao);
 
+        int idMedico = medico.getId();
+        int idPaciente = paciente.getId();
+
+        String sql = "insert into atendimento(paciente_id, medico_id, data_atendimento) values(?, ?, ?)";
+
+        try{
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setInt(1, idMedico);
+            stmt.setInt(2, idPaciente);
+            stmt.setString(3, dataDeAtendimento);
+
+            stmt.executeUpdate();
+            stmt.close();
+
+            System.out.println("O atendimento do médico " + medico.getNome() + ", foi adicionado com sucesso!");
+
+        }catch (SQLException e){
+            System.out.println("Erro ao registrar um atendimento médico.");
+        }
     }
 
     public void adicionar(Atendimento atendimento, Connection conexao){
