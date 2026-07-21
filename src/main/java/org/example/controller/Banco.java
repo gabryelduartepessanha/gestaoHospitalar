@@ -343,7 +343,7 @@ public class Banco {
         int idMedico = medico.getId();
         int idPaciente = paciente.getId();
 
-        String sql = "insert into atendimento(paciente_id, medico_id, data_atendimento) values(?, ?, ?)";
+        String sql = "insert into atendimento(medico_id, paciente_id, data_atendimento) values(?, ?, ?)";
 
         try{
             PreparedStatement stmt = conexao.prepareStatement(sql);
